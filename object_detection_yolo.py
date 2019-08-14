@@ -9,6 +9,13 @@ import sys
 import numpy as np
 import os.path
 import time
+import json  
+
+model_config = {}
+with open('config.json') as f:
+    model_config = json.load(f, encoding='utf-8')
+
+demo_config = model_config["full"]
 
 # Initialize the parameters
 confThreshold = 0.5  #Confidence threshold
@@ -20,16 +27,16 @@ parser = argparse.ArgumentParser(description='Object Detection using YOLO in OPE
 parser.add_argument('--image', help='Path to image file.')
 parser.add_argument('--video', help='Path to video file.')
 args = parser.parse_args()
-        
+
 # Load names of classes
-classesFile = "classes.txt" #"coco.names"
+classesFile = demo_config['classes'] # "classes.txt" #"coco.names"
 classes = None
 with open(classesFile, 'rt') as f:
     classes = f.read().rstrip('\n').split('\n')
 
 # Give the configuration and weight files for the model and load the network using them.
-modelConfiguration = "yolov3-tiny_obj.cfg" #"yolov3.cfg"
-modelWeights = "yolov3-tiny-cp_final.weights" #"yolov3.weights"
+modelConfiguration = demo_config['model_cfg'] #"yolov3-tiny_obj.cfg" #"yolov3.cfg"
+modelWeights = demo_config['model'] #"yolov3-tiny-cp_1000.weights" #"yolov3.weights"
 
 net = cv.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
 net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)

@@ -1,0 +1,14 @@
+{
+	"full" : {
+		"classes" : "coco.names", 
+		"model_cfg" : "yolov3.cfg", 
+		"model" : "yolov3.weights"
+	},
+	"tiny" : {
+		"classes" : "classes.txt",
+		"model_cfg" : "yolov3-tiny_obj.cfg",
+		"model" : "yolov3-tiny-cp_1000.weights"
+	}
+}
+
+
