@@ -15,7 +15,7 @@ model_config = {}
 with open('config.json') as f:
     model_config = json.load(f, encoding='utf-8')
 
-demo_config = model_config["full"]
+demo_config = model_config["tiny"]
 
 # Initialize the parameters
 confThreshold = 0.5  #Confidence threshold
