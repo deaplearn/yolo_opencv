@@ -15,8 +15,6 @@ model_config = {}
 with open('config.json') as f:
     model_config = json.load(f, encoding='utf-8')
 
-demo_config = model_config["tiny"]
-
 # Initialize the parameters
 confThreshold = 0.5  #Confidence threshold
 nmsThreshold = 0.4   #Non-maximum suppression threshold
@@ -26,7 +24,14 @@ inpHeight = 416      #Height of network's input image
 parser = argparse.ArgumentParser(description='Object Detection using YOLO in OPENCV')
 parser.add_argument('--image', help='Path to image file.')
 parser.add_argument('--video', help='Path to video file.')
+parser.add_argument('--mtype', help='typle of model tiny or full.')
 args = parser.parse_args()
+
+if not args.mtype:
+    demo_config = model_config["tiny"]
+else:
+    demo_config = model_config[args.mtype]
+
 
 # Load names of classes
 classesFile = demo_config['classes'] # "classes.txt" #"coco.names"
