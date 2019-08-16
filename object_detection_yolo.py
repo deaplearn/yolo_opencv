@@ -9,45 +9,50 @@ import sys
 import numpy as np
 import os.path
 import time
-import json  
+import json
 
 model_config = {}
 with open('config.json') as f:
     model_config = json.load(f, encoding='utf-8')
 
 # Initialize the parameters
-confThreshold = 0.5  #Confidence threshold
-nmsThreshold = 0.4   #Non-maximum suppression threshold
-inpWidth = 416       #Width of network's input image
-inpHeight = 416      #Height of network's input image
+confThreshold = 0.5  # Confidence threshold
+nmsThreshold = 0.4  # Non-maximum suppression threshold
+inpWidth = 416  # Width of network's input image
+inpHeight = 416  # Height of network's input image
 
-parser = argparse.ArgumentParser(description='Object Detection using YOLO in OPENCV')
+parser = argparse.ArgumentParser(
+    description='Object Detection using YOLO in OPENCV')
 parser.add_argument('--image', help='Path to image file.')
 parser.add_argument('--video', help='Path to video file.')
 parser.add_argument('--mtype', help='typle of model tiny or full.')
 args = parser.parse_args()
 
-if not args.mtype:
-    demo_config = model_config["tiny"]
+if not args.mtype in ['full', 'tiny', 'custom']:
+    demo_config = model_config["custom"]
 else:
     demo_config = model_config[args.mtype]
 
-
+print("demo_config: ", demo_config)
 # Load names of classes
-classesFile = demo_config['classes'] # "classes.txt" #"coco.names"
+classesFile = demo_config['classes']  # "classes.txt" #"coco.names"
 classes = None
 with open(classesFile, 'rt') as f:
     classes = f.read().rstrip('\n').split('\n')
 
 # Give the configuration and weight files for the model and load the network using them.
-modelConfiguration = demo_config['model_cfg'] #"yolov3-tiny_obj.cfg" #"yolov3.cfg"
-modelWeights = demo_config['model'] #"yolov3-tiny-cp_1000.weights" #"yolov3.weights"
+# "yolov3-tiny_obj.cfg" #"yolov3.cfg"
+modelConfiguration = demo_config['model_cfg']
+# "yolov3-tiny-cp_1000.weights" #"yolov3.weights"
+modelWeights = demo_config['model']
 
 net = cv.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
 net.setPreferableBackend(cv.dnn.DNN_BACKEND_OPENCV)
 net.setPreferableTarget(cv.dnn.DNN_TARGET_CPU)
 
 # Get the names of the output layers
+
+
 def getOutputsNames(net):
     # Get the names of all the layers in the network
     layersNames = net.getLayerNames()
@@ -55,24 +60,31 @@ def getOutputsNames(net):
     return [layersNames[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
 # Draw the predicted bounding box
+
+
 def drawPred(classId, conf, left, top, right, bottom):
     # Draw a bounding box.
     cv.rectangle(frame, (left, top), (right, bottom), (255, 178, 50), 3)
-    
+
     label = '%.2f' % conf
-        
+
     # Get the label for the class name and its confidence
     if classes:
         assert(classId < len(classes))
         label = '%s:%s' % (classes[classId], label)
 
-    #Display the label at the top of the bounding box
-    labelSize, baseLine = cv.getTextSize(label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
+    # Display the label at the top of the bounding box
+    labelSize, baseLine = cv.getTextSize(
+        label, cv.FONT_HERSHEY_SIMPLEX, 0.5, 1)
     top = max(top, labelSize[1])
-    cv.rectangle(frame, (left, top - round(1.5*labelSize[1])), (left + round(1.5*labelSize[0]), top + baseLine), (255, 255, 255), cv.FILLED)
-    cv.putText(frame, label, (left, top), cv.FONT_HERSHEY_SIMPLEX, 0.75, (0,0,0), 1)
+    cv.rectangle(frame, (left, top - round(1.5 * labelSize[1])), (left + round(
+        1.5 * labelSize[0]), top + baseLine), (255, 255, 255), cv.FILLED)
+    cv.putText(frame, label, (left, top),
+               cv.FONT_HERSHEY_SIMPLEX, 0.75, (0, 0, 0), 1)
 
 # Remove the bounding boxes with low confidence using non-maxima suppression
+
+
 def postprocess(frame, outs):
     frameHeight = frame.shape[0]
     frameWidth = frame.shape[1]
@@ -108,7 +120,9 @@ def postprocess(frame, outs):
         top = box[1]
         width = box[2]
         height = box[3]
-        drawPred(classIds[i], confidences[i], left, top, left + width, top + height)
+        drawPred(classIds[i], confidences[i], left,
+                 top, left + width, top + height)
+
 
 # Process inputs
 winName = 'Deep learning object detection in OpenCV'
@@ -121,25 +135,26 @@ if (args.image):
         print("Input image file ", args.image, " doesn't exist")
         sys.exit(1)
     cap = cv.VideoCapture(args.image)
-    outputFile = args.image[:-4]+'_yolo_out_py.jpg'
+    outputFile = args.image[:-4] + '_yolo_out_py.jpg'
 elif (args.video):
     # Open the video file
     if not os.path.isfile(args.video):
         print("Input video file ", args.video, " doesn't exist")
         sys.exit(1)
     cap = cv.VideoCapture(args.video)
-    outputFile = args.video[:-4]+'_yolo_out_py.avi'
+    outputFile = args.video[:-4] + '_yolo_out_py.avi'
 else:
     # Webcam input
     cap = cv.VideoCapture(0)
 
 # Get the video writer initialized to save the output video
 if (not args.image):
-    vid_writer = cv.VideoWriter(outputFile, cv.VideoWriter_fourcc('M','J','P','G'), 30, (round(cap.get(cv.CAP_PROP_FRAME_WIDTH)),round(cap.get(cv.CAP_PROP_FRAME_HEIGHT))))
-    
+    vid_writer = cv.VideoWriter(outputFile, cv.VideoWriter_fourcc('M', 'J', 'P', 'G'), 30, (round(
+        cap.get(cv.CAP_PROP_FRAME_WIDTH)), round(cap.get(cv.CAP_PROP_FRAME_HEIGHT))))
+
 index = 0
 while cv.waitKey(1) < 0:
-    
+
     # get frame from the video
     hasFrame, frame = cap.read()
 
@@ -154,7 +169,8 @@ while cv.waitKey(1) < 0:
     index = index + 1
     print ("start handle frame:", index, ', ts:', time.time())
     # Create a 4D blob from a frame.
-    blob = cv.dnn.blobFromImage(frame, 1/255, (inpWidth, inpHeight), [0,0,0], 1, crop=False)
+    blob = cv.dnn.blobFromImage(
+        frame, 1 / 255, (inpWidth, inpHeight), [0, 0, 0], 1, crop=False)
 
     # Sets the input to the network
     net.setInput(blob)
@@ -170,7 +186,8 @@ while cv.waitKey(1) < 0:
     # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
     t, _ = net.getPerfProfile()
     label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
-    cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
+    cv.putText(frame, label, (0, 15),
+               cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
 
     # Write the frame with the detection boxes
     if (args.image):
@@ -179,4 +196,3 @@ while cv.waitKey(1) < 0:
         vid_writer.write(frame.astype(np.uint8))
 
     cv.imshow(winName, frame)
-
