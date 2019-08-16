@@ -162,7 +162,7 @@ while cv.waitKey(1) < 0:
     if not hasFrame:
         print("Done processing !!!")
         print("Output file is stored as ", outputFile)
-        cv.waitKey(3000)
+        cv.waitKey(0)
         # Release device
         cap.release()
         break
@@ -186,8 +186,8 @@ while cv.waitKey(1) < 0:
     # Put efficiency information. The function getPerfProfile returns the overall time for inference(t) and the timings for each of the layers(in layersTimes)
     t, _ = net.getPerfProfile()
     label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
-    cv.putText(frame, label, (0, 15),
-               cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
+    cv.putText(frame, label, (0, 35),
+               cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
     # Write the frame with the detection boxes
     if (args.image):

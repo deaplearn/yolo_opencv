@@ -18,7 +18,7 @@ elif [[ $1 == "tiny" ]]; then
 	python3 object_detection_yolo.py --mtype tiny
 	
 elif [[ $1 == *".jpg" ]]; then
-	python3 object_detection_yolo.py --image $1
+	python3 object_detection_yolo.py --image $1 --mtype $2
 elif [[ $1 == *".mp4" ]]; then
 	echo "p1: "$1" p2:"$2
 	python3 object_detection_yolo.py --video $1 --mtype $2
