@@ -11,7 +11,7 @@
 	},
 	"custom" : {
 		"classes" : "classes.txt",
-		"model_cfg" : "yolov3-tiny_obj.cfg",
+		"model_cfg" : "yolov3-tiny-cp.cfg",
 		"model" : "yolov3-tiny-cp_1000.weights"
 	}
 }
