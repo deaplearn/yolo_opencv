@@ -1,3 +1,4 @@
 yolov3-tiny-cp_final.weights filter=lfs diff=lfs merge=lfs -text
 yolov3-tiny-cp_1000.weights filter=lfs diff=lfs merge=lfs -text
 yolov3.weights filter=lfs diff=lfs merge=lfs -text
+*.weight filter=lfs diff=lfs merge=lfs -text
