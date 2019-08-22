@@ -12,14 +12,14 @@
 	"custom" : {
 		"classes" : "classes.txt",
 		"model_cfg" : "yolov3-tiny-cp.cfg",
-		"model" : "yolov3-tiny-cp_1000.weights"
+		"model" : "yolov3-tiny-syn_2000.weights"
 	},
 	"cv" : {
 		"classes" : "classes.txt",
 		"model_cfg" : "yolov3-tiny-cp.cfg",
 		"model" : "yolov3-tiny-cv.weights"
 	},
-	"ori" : {
+	"openimg" : {
 		"classes" : "classes.txt",
 		"model_cfg" : "yolov3-tiny-cp.cfg",
 		"model" : "yolov3-tiny-ori.weights"

@@ -28,7 +28,7 @@ parser.add_argument('--video', help='Path to video file.')
 parser.add_argument('--mtype', help='typle of model tiny or full.')
 args = parser.parse_args()
 
-if not args.mtype in ['full', 'tiny', 'custom', 'cv', 'ori']:
+if not args.mtype in ['full', 'tiny', 'custom', 'cv', 'openimg']:
     demo_config = model_config["custom"]
 else:
     demo_config = model_config[args.mtype]
